@@ -18,12 +18,13 @@ const Login = () => {
     }
 
     const addNote = () => {
+        setPlusOpen(false);
         setFilteredNotes([...filteredNotes, {}]);
     }
 
     return (
         <div className='relative min-h-screen h-screen bg-gradient-to-t from-purple-100 to-sky-300 flex justify-center overflow-auto'>
-            <div className="relative container" onClick={addNote}>
+            <div className="container">
                 <nav className='text-right text-white text-lg mx-5 my-4 font-bold select-nothing cursor-pointer' >Anonymous</nav>
                 <div className='my-8 flex justify-center'>
                     <input type="text" placeholder='Quick Search' className='p-2 rounded-md outline-none shadow-lg focus:shadow-xl focus:scale-105 transition-transform' />
@@ -36,18 +37,23 @@ const Login = () => {
                     </div>
                 </div>
 
-                <div className="flex justify-center">
+                <div className="flex justify-center md:relative">
                     <div className='grid grid-cols-1 gap-10 md:grid-cols-3  p-5'>
                     {
-                        filteredNotes.map(note => <Tile />)
+                        filteredNotes.map((note, ind) => <Tile key={ind} />)
                     }
+                    <Tile />
+                    {/* <Tile />
+                    <Tile />
+                    <Tile />
+                    <Tile /> */}
                     </div>
                 </div>
 
                 <div className="h-64"></div>
                 
                 <div className='fixed right-0 bottom-0 m-5 select-nothing'>
-                    <div data-open={plusOpen} className='absolute w-max opacity-0 bottom-32 cursor-pointer data-[open=true]:opacity-100 transition-opacity right-0 py-3 px-7 bg-blue-500 text-white font-medium rounded-md'>New File</div>
+                    <div data-open={plusOpen} onClick={addNote} className='absolute w-max opacity-0 bottom-32 cursor-pointer data-[open=true]:opacity-100 transition-opacity right-0 py-3 px-7 bg-blue-500 text-white font-medium rounded-md'>New File</div>
                     <div data-open={plusOpen} className='absolute w-max opacity-0 bottom-16 cursor-pointer data-[open=true]:opacity-100 transition-opacity right-0 py-3 px-7 bg-blue-500 text-white font-medium rounded-md'>New Folder</div>
                     <Plus open={plusOpen} styles="absolute z-10 bottom-0 right-0" action={onPlusClick} />
                 </div> 

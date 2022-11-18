@@ -24,6 +24,35 @@ code {
 @tailwind utilities;
 
 
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 5px;
+    /* height: 20px; */
+    cursor: pointer;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    width: 10px;
+    border-radius: 100vh;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    width: 8px;
+    background: #e0cbcb;
+    cursor: pointer;
+    border-radius: 100vh;
+    border: none;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #c0a0b9;
+    width: 8px;
+    cursor: pointer;
+  }
+}
+
 .select-nothing {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
