@@ -1,17 +1,27 @@
 
-import React, { useState } from 'react';
-import { Plus } from 'Components/Buttons';
-import { Tile } from 'Components/Tile';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Tile, Label } from 'Components/Tile';
+import { label, Note } from 'Utils';
+import { useLocalStorage } from 'useLocalStorage';
+import {  v4 as uuidv4 } from 'uuid';
+import AddMenu from 'Components/AddMenu';
 
-interface Note {
-
-}
 
 const Login = () => {
 
     // const navigate = useNavigate();
-    const [plusOpen, setPlusOpen] = useState(false);
+    const [plusOpen, setPlusOpen] = useState<boolean>(false);
+    const [selectedLabel, setSelectedLabel] = useState<boolean>(false);
     const [filteredNotes, setFilteredNotes] = useState<Note[]>([]);
+
+    const [notes, setNotes] = useLocalStorage<Note[]>('NOTES', []);
+    const [labels, setLabels] = useLocalStorage<label[]>('LABELS', [{id: '1', name:'General'}]);
+
+    const labelWithNotes = useMemo(() => {
+        return labels.map(label => {
+            return {...label, notesIds: notes.filter(note => note.labelId)}
+        })
+    }, []);
 
     const onPlusClick = () => {
         setPlusOpen(!plusOpen);
@@ -19,44 +29,51 @@ const Login = () => {
 
     const addNote = () => {
         setPlusOpen(false);
-        setFilteredNotes([...filteredNotes, {}]);
+        setNotes([...notes, {id: uuidv4()} as Note]);
+        // setFilteredNotes([...filteredNotes, {} as Note]);
     }
+
+    const saveEditedNote = (editedNote: Note) => {
+        const tmp = notes.map(note => note.id === editedNote.id ? editedNote : note);
+        setNotes(tmp);
+    }
+
+    useEffect(() => {
+        setFilteredNotes(notes);
+    }, [notes, setFilteredNotes]);
 
     return (
         <div className='relative min-h-screen h-screen bg-gradient-to-t from-purple-100 to-sky-300 flex justify-center overflow-auto'>
-            <div className="container">
-                <nav className='text-right text-white text-lg mx-5 my-4 font-bold select-nothing cursor-pointer' >Anonymous</nav>
-                <div className='my-8 flex justify-center'>
+            <div className="container px-5">
+                <nav className='text-right text-white text-lg my-4 font-bold select-nothing cursor-pointer' >Anonymous</nav>
+                {/* search */}
+                <div className='my-4 flex justify-center'>
                     <input type="text" placeholder='Quick Search' className='p-2 rounded-md outline-none shadow-lg focus:shadow-xl focus:scale-105 transition-transform' />
                 </div>
-
-                <div className="flex justify-center sticky top-3 my-8 mx-5 z-20">
+                {/* quick notes */}
+                <div className="flex justify-center sticky top-3 my-8 z-20">
                     <div className='w-full xl:w-[1050px] p-5 rounded-md shadow-lg overflow-hidden bg-white'>
                         <input type="text" placeholder='Title' className='w-full text-lg font-semibold outline-none' />
                         <input type="text" placeholder='Quick Note' className='w-full outline-none mt-2' />
                     </div>
                 </div>
-
-                <div className="flex justify-center md:relative">
-                    <div className='grid grid-cols-1 gap-10 md:grid-cols-3  p-5'>
+                {/* folders */}
+                <div className='w-full flex gap-5 flex-wrap mb-5'>
+                    <Label name="General" selected={true} />
+                    <Label name="Label" selected={selectedLabel} />
+                </div>
+                {/* files */}
+                <div className="md:relative">
+                    <div className='grid grid-cols-1 gap-10 md:grid-cols-3  py-5'>
                     {
-                        filteredNotes.map((note, ind) => <Tile key={ind} />)
+                        filteredNotes.map((note, ind) => <Tile note={note} key={ind} save={saveEditedNote} />)
                     }
-                    <Tile />
-                    {/* <Tile />
-                    <Tile />
-                    <Tile />
-                    <Tile /> */}
                     </div>
                 </div>
 
                 <div className="h-64"></div>
                 
-                <div className='fixed right-0 bottom-0 m-5 select-nothing'>
-                    <div data-open={plusOpen} onClick={addNote} className='absolute w-max opacity-0 bottom-32 cursor-pointer data-[open=true]:opacity-100 transition-opacity right-0 py-3 px-7 bg-blue-500 text-white font-medium rounded-md'>New File</div>
-                    <div data-open={plusOpen} className='absolute w-max opacity-0 bottom-16 cursor-pointer data-[open=true]:opacity-100 transition-opacity right-0 py-3 px-7 bg-blue-500 text-white font-medium rounded-md'>New Folder</div>
-                    <Plus open={plusOpen} styles="absolute z-10 bottom-0 right-0" action={onPlusClick} />
-                </div> 
+                <AddMenu plusOpen={plusOpen} addNote={addNote} onPlusClick={onPlusClick} />
             </div>
             
         </div>

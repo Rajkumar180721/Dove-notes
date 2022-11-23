@@ -1,11 +1,18 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BiMessageSquareEdit } from 'react-icons/bi';
 import { MdOutlineContentCopy } from 'react-icons/md';
 import { AiOutlineArrowLeft } from 'react-icons/ai';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Note } from 'Utils';
 
-const Tile = () => {
+
+export type NoteProps =  {
+    note: Note,
+    save: (note: Note) => void
+};
+
+const Tile = ({note, save}:NoteProps) => {
 
     const navigate = useNavigate();
     const query = new URLSearchParams(useLocation().search);
@@ -13,20 +20,24 @@ const Tile = () => {
     const [open, setOpen] = useState(false);
     const [edit, setEdit] = useState(false);
 
+
     const changeEdit = (state: boolean) => {
+        if (edit || open)
+            save(note);
         setEdit(state);
         setOpen(state);
     }
 
-    
+    // const onChange = () => {};
+    const onChange = (text: object) => save({...note, ...text});
     
     return (
         <>
-            <div data-open={open} onClick={() => setOpen(true)} className={`relative h-52 w-80 bg-white rounded-md shadow-md p-5 select-nothing md:h-72 md:w-96`}>
+            <div data-open={open} onClick={() => setOpen(true)} className={`relative h-52 w-full bg-white rounded-md shadow-md p-5 select-nothing md:h-64 md:w-96`}>
                 <BiMessageSquareEdit title="edit" onClick={e => {e.stopPropagation(); changeEdit(true);}} className='absolute h-6 sm:h-10 w-10 right-14 top-2 sm:p-2 bg-transparent cursor-pointer' color="rgba(0, 0, 0, .6)" />
                 <MdOutlineContentCopy title="Copy" onClick={e => e.stopPropagation()} className='absolute h-6 sm:h-10 w-10 right-3 top-2 sm:p-2 bg-transparent cursor-pointer' color="rgba(0, 0, 0, .6)" />
-                <div className="font-bold text-lg text-gray-500 mt-4 sm:mt-8">Title</div>
-                <div className="text-gray-500 font-normal py-3">Note</div>
+                <div className="font-bold text-lg text-gray-500 mt-4 sm:mt-8">{note.title || "Title"}</div>
+                <div className="text-gray-500 font-normal py-3">{note.content || "Note"}</div>
             </div>
             {
                 open &&
@@ -43,13 +54,13 @@ const Tile = () => {
                             edit
                             ?
                             <>
-                            <input type="text" placeholder='Title' className="block w-full font-bold text-lg text-gray-500 p-5 mt-2 outline-none" />
-                            <textarea placeholder='Note' className="h-5/6 w-full text-gray-500 font-normal p-6 resize-none scrollbar outline-none" draggable={false} />
+                            <input autoFocus={true} type="text" placeholder='Title' defaultValue={note.title} onChange={e => onChange({title: e.target.value})} className="block w-full font-bold text-lg text-gray-500 p-5 mt-2 outline-none" />
+                            <textarea placeholder='Note' onChange={e => onChange({content: e.target.value})} defaultValue={note.content} className="h-5/6 w-full text-gray-500 font-normal p-6 resize-none scrollbar outline-none" draggable={false} />
                             </>
                             :
                             <>
-                            <div className="font-bold text-lg text-gray-500 p-5 mt-2">Title</div>
-                            <div className="text-gray-500 font-normal p-6">Note</div>
+                            <div className="font-bold text-lg text-gray-500 p-5 mt-2">{note.title}</div>
+                            <div className="text-gray-500 font-normal p-6">{note.content}</div>
                             </>
                         }
                     </div>
