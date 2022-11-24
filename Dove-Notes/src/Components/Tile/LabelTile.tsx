@@ -36,7 +36,7 @@ export const Label = ({name, selected}:props) => {
             {name}
         </div> */}
         <div className="select-nothing">
-            <input ref={ref} readOnly={!edit} draggable={false} defaultValue={name} size={6} onMouseDown={start} onMouseUp={end} onTouchStart={start} onTouchEnd={end} onBlur={saveLabel} data-selected={selected} type="text" className=" max-w-max px-8 py-3 font-bold text-gray-500 text-center bg-white rounded-xl shadow-lg cursor-pointer select-nothing outline-none data-[selected=false]:opacity-60 data-[selected=false]:shadow-md" />
+            <input ref={ref} readOnly={!edit} draggable={false} defaultValue={name} size={6} onMouseDown={start} onMouseUp={end} onTouchStart={start} onTouchEnd={end} onBlur={saveLabel} data-selected={selected} type="text" className=" max-w-max p-3 font-bold text-gray-500 text-center bg-white rounded-xl shadow-lg cursor-pointer select-nothing outline-none data-[selected=false]:opacity-60 data-[selected=false]:shadow-md" />
         </div>
         </>
     );
