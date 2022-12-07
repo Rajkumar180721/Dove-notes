@@ -1,43 +1,82 @@
 
-import React, { useEffect, useRef, useState, KeyboardEvent, SyntheticEvent, HtmlHTMLAttributes } from "react";
-import { LongPress } from "Utils";
+import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
+import { label } from "Utils";
+// import { BiMessageSquareEdit } from 'react-icons/bi';
+// import { MdDeleteForever } from 'react-icons/md';
 
 type props = {
+    id: string,
     name: string,
-    selected: boolean
+    selected: string,
+    saveLabel: (label: label) => void,
+    setSelected: (id: string) => void
 }
-export const Label = ({name, selected}:props) => {
+export const Notebook = ({id, name, selected, saveLabel, setSelected}:props) => {
 
     const ref = useRef<HTMLInputElement>(null);
 
+    const [popup, setPopup] = useState<boolean>(false);
     const [edit, setEdit] = useState<boolean>(false);
-    const {start, end} = LongPress(500, enableEdit);
 
-    function enableEdit() {
-        if (selected)
-            setEdit(true);
+
+    const enableEdit = () => {
+        setEdit(true);
+        setPopup(false);
     }
 
-    const saveLabel = () => {
-        setEdit(false);        
+    const onSaveLabel = () => {
+        console.log('saving label');
+        
+        setPopup(false);
         if (ref.current) {
-            const length = ref.current.value.length
-            ref.current.size = length < 6 ? 6 : length;
+            const text = ref.current.value;
+            console.log(text);
+            saveLabel({id, name: text});
         }
     }
 
+    const blur = () => {
+        setPopup(false);
+        setEdit(false);
+    }
+
+    const onContextMenu = (e: SyntheticEvent) => {
+        if (id === '1') return;
+        e.preventDefault();
+        setSelected(id);
+        setPopup(true);
+    }
+
+
     useEffect(() => {
-        (ref.current as any).focus();
+        if (edit && ref.current) {
+            ref.current.focus();
+            ref.current.select();
+        }
     }, [edit]);
 
     return (
-        <>
-        {/* <div ref={ref} data-selected={selected} contentEditable={edit} onInput={onInput} onChange={onKeypress} onMouseDown={start} onMouseUp={end} onTouchStart={start} onTouchEnd={end} onBlur={() => setEdit(false)} className="w-max px-8 py-3 font-bold text-gray-500 bg-white rounded-xl shadow-lg cursor-pointer select-nothing transition-opacity outline-none data-[selected=false]:opacity-60 data-[selected=false]:shadow-md">
-            {name}
-        </div> */}
-        <div className="select-nothing">
-            <input ref={ref} readOnly={!edit} draggable={false} defaultValue={name} size={6} onMouseDown={start} onMouseUp={end} onTouchStart={start} onTouchEnd={end} onBlur={saveLabel} data-selected={selected} type="text" className=" max-w-max p-3 font-bold text-gray-500 text-center bg-white rounded-xl shadow-lg cursor-pointer select-nothing outline-none data-[selected=false]:opacity-60 data-[selected=false]:shadow-md" />
+        <div data-selected={selected === id} className="select-nothing relative text-gray-500 p-3 bg-white shadow-lg rounded-lg cursor-pointer data-[selected=false]:opacity-60" onClick={() => setSelected(id)} onContextMenu={onContextMenu}>
+            {
+                edit
+                ?
+                <input ref={ref} draggable={false} defaultValue={name} onChange={onSaveLabel} type="text" className="w-full outline-none border-none"/>
+                :
+                <div ref={ref} className="">{name}</div>
+
+            }
+            {
+                popup &&
+                <div className="absolute w-24 z-10 py-1 top-14 right-0 text-gray-600 font-medium bg-white rounded-md overflow-hidden shadow-xl">
+                    <div onClick={blur} className="fixed top-0 left-0 h-screen w-screen -z-10"></div>
+                    <div onClick={enableEdit} className="text-right pr-3 py-1 cursor-pointer hover:bg-gray-100">
+                        Edit
+                    </div>
+                    <div className="text-right pr-3 py-1 cursor-pointer hover:bg-gray-100">
+                        Delete
+                    </div>
+                </div>
+            }
         </div>
-        </>
     );
 }

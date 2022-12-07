@@ -8,7 +8,7 @@ import Home from 'Screens/Home';
 const Main = () => {
 return (         
     <Routes>
-        <Route path='/' element={<Navigate to='/welcome' />} />
+        <Route path='/' element={<Navigate to='/home' />} />
         <Route path='/welcome' element={<Welcome />} /> 
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />

@@ -1,5 +1,5 @@
 import React from "react";
-import { DefaultButton as Button } from "Components/Buttons/defaultButtom";
+import { DefaultButton as Button } from "Components/Buttons/defaultButton";
 
 
 type prop = {

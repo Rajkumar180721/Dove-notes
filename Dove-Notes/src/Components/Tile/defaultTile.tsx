@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, KeyboardEvent } from 'react';
 import { BiMessageSquareEdit } from 'react-icons/bi';
 import { MdOutlineContentCopy } from 'react-icons/md';
 import { AiOutlineArrowLeft } from 'react-icons/ai';
@@ -44,20 +44,25 @@ const Tile = ({note, save, deleteNote}:NoteProps) => {
     
     // const onChange = () => {};
     const onChange = (text: textProp) => save({...note, ...text});
+    const onKeypress = (e: KeyboardEvent) => {
+        if (e.key === 'Escape')
+            closeTile();
+    }
+
     
     return (
         <>
-            <div data-open={selected === note.id} onClick={() => openTile()} className={`relative h-52 w-full bg-white rounded-md shadow-md p-5 select-nothing md:h-64 md:w-96`}>
+            <div data-open={selected === note.id} onClick={() => openTile()} tabIndex={-1} className={`relative h-52 w-full bg-white rounded-md shadow-md p-5 select-nothing md:h-64 md:w-96`}>
                 <BiMessageSquareEdit title="edit" onClick={e => {e.stopPropagation(); openTile(true);}} className='absolute h-6 sm:h-10 w-10 right-14 top-2 sm:p-2 bg-transparent cursor-pointer' color="rgba(0, 0, 0, .6)" />
                 <MdOutlineContentCopy title="Copy" onClick={e => e.stopPropagation()} className='absolute h-6 sm:h-10 w-10 right-3 top-2 sm:p-2 bg-transparent cursor-pointer' color="rgba(0, 0, 0, .6)" />
                 <div className="font-bold text-lg text-gray-500 mt-4 sm:mt-8">{note.title || "Title"}</div>
-                <div className="text-gray-500 font-normal py-3">{note.content || "Note"}</div>
+                <div className="text-gray-500 font-normal py-3 whitespace-pre-wrap">{note.content || "Note"}</div>
             </div>
             {
                 selected === note.id &&
-                <div className='fixed h-full w-full top-0 left-0 z-30'>
+                <div className='fixed h-full w-full top-0 left-0 z-30' tabIndex={0} onKeyDown={onKeypress}>
                     <div onClick={closeTile} className='absolute h-full w-full top-0 left-0 bg-black bg-opacity-60'></div>
-                    <div onClick={e => e.stopPropagation()}  className="absolute h-full w-full top-0 left-0 right-0 bottom-0 p-8 bg-white rounded-md shadow-md select-nothing z-30 md:fixed md:w-9/12 md:h-[30rem] md:max-h-fit md:m-auto">
+                    <div onClick={e => e.stopPropagation()}  className="absolute h-full w-full top-0 left-0 right-0 bottom-0 p-8 bg-white rounded-md shadow-md z-30 md:fixed md:w-9/12 md:h-[30rem] md:max-h-fit md:m-auto">
                         <AiOutlineArrowLeft title="back" onClick={closeTile} className='block sm:hidden absolute left-3 top-2 p-2 bg-transparent rounded-full cursor-pointer' size={42} color="rgba(0, 0, 0, .6)" />
                         {
                             edit
@@ -78,7 +83,7 @@ const Tile = ({note, save, deleteNote}:NoteProps) => {
                             :
                             <>
                             <div className="font-bold text-lg text-gray-500 p-5 mt-2">{note.title || "Title"}</div>
-                            <div className="text-gray-500 font-normal p-6">{note.content || "Note"}</div>
+                            <div className="text-gray-500 font-normal p-6 whitespace-pre-wrap">{note.content || "Note"}</div>
                             </>
                         }
                     </div>
