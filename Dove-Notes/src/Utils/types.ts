@@ -1,13 +1,13 @@
 
 
-export type Note = {
+export type FileModel = {
     id: string,
     title: string,
     content: string
-    labelId: string
+    folderId: string
 }
 
-export type label = {
+export type NotebookModel = {
     id: string,
     name: string,
 }

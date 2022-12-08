@@ -1,4 +1,4 @@
 
 
-export {default as Tile} from './defaultTile';
-export * from './LabelTile';
+export {default as FileTile} from './FileTile';
+export * from './FolderTile';

@@ -6,13 +6,13 @@ import { AiOutlineArrowLeft } from 'react-icons/ai';
 import { TiDocumentDelete, TiTickOutline } from 'react-icons/ti';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Popup } from 'Components/Popup';
-import { Note } from 'Utils';
+import { FileModel } from 'Utils';
 
 
 type NoteProps =  {
-    note: Note,
-    save: (note: Note) => void,
-    deleteNote: (note: Note) => void,
+    note: FileModel,
+    save: (note: FileModel) => void,
+    deleteFile: (note: FileModel) => void,
 };
 
 type textProp = {
@@ -20,7 +20,7 @@ type textProp = {
     content?: string,
 }
 
-const Tile = ({note, save, deleteNote}:NoteProps) => {
+const FileTile = ({note, save, deleteFile}:NoteProps) => {
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -46,7 +46,7 @@ const Tile = ({note, save, deleteNote}:NoteProps) => {
     const onChange = (text: textProp) => save({...note, ...text});
     const onKeypress = (e: KeyboardEvent) => {
         if (e.key === 'Escape')
-            closeTile();
+            closeTile()
     }
 
     
@@ -89,7 +89,7 @@ const Tile = ({note, save, deleteNote}:NoteProps) => {
                     </div>
                     {
                         confirmDelete &&
-                        <Popup text="Are you sure you want to delete this?" primary={() => deleteNote(note)} secondary={() => setConfirmDelete(false)} />
+                        <Popup text="Are you sure you want to delete this?" primary={() => deleteFile(note)} secondary={() => setConfirmDelete(false)} />
                     }
                 </div>
             }
@@ -97,4 +97,4 @@ const Tile = ({note, save, deleteNote}:NoteProps) => {
     );
 }
 
-export default Tile;
+export default FileTile;
