@@ -101,7 +101,7 @@ const Home = () => {
                 </div>
                 {/* files */}
                 <div className="md:relative">
-                    <div className='grid grid-cols-1 gap-10 md:grid-cols-3'>
+                    <div className='grid grid-cols-1 gap-3 md:grid-cols-3'>
                     {
                         filteredFiles.map((note, ind) => <FileTile note={note} key={ind} save={saveEditedFile} deleteFile={deleteFile} />)
                     }

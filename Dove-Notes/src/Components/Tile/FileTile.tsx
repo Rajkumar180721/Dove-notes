@@ -1,10 +1,11 @@
 
-import { useState, KeyboardEvent } from 'react';
+import { useState, KeyboardEvent, useEffect } from 'react';
 import { BiMessageSquareEdit } from 'react-icons/bi';
 import { MdOutlineContentCopy } from 'react-icons/md';
 import { AiOutlineArrowLeft } from 'react-icons/ai';
 import { TiDocumentDelete, TiTickOutline } from 'react-icons/ti';
 import { useLocation, useNavigate } from 'react-router-dom';
+import copy from 'copy-to-clipboard';
 import { Popup } from 'Components/Popup';
 import { FileModel } from 'Utils';
 
@@ -46,17 +47,29 @@ const FileTile = ({note, save, deleteFile}:NoteProps) => {
     const onChange = (text: textProp) => save({...note, ...text});
     const onKeypress = (e: KeyboardEvent) => {
         if (e.key === 'Escape')
-            closeTile()
+            closeTile();
     }
+
+    const copyContent = () => {
+        copy('Text hello', {
+            debug: true,
+            message: 'Press #{key} to copy',
+          });
+    }
+
+    useEffect(() => {
+        if (selected !== note.id)
+            setEdit(false);
+    }, [selected, note.id]);
 
     
     return (
         <>
-            <div data-open={selected === note.id} onClick={() => openTile()} tabIndex={-1} className={`relative h-52 w-full bg-white rounded-md shadow-md p-5 select-nothing md:h-64 md:w-96`}>
-                <BiMessageSquareEdit title="edit" onClick={e => {e.stopPropagation(); openTile(true);}} className='absolute h-6 sm:h-10 w-10 right-14 top-2 sm:p-2 bg-transparent cursor-pointer' color="rgba(0, 0, 0, .6)" />
-                <MdOutlineContentCopy title="Copy" onClick={e => e.stopPropagation()} className='absolute h-6 sm:h-10 w-10 right-3 top-2 sm:p-2 bg-transparent cursor-pointer' color="rgba(0, 0, 0, .6)" />
-                <div className="font-bold text-lg text-gray-500 mt-4 sm:mt-8">{note.title || "Title"}</div>
-                <div className="text-gray-500 font-normal py-3 whitespace-pre-wrap">{note.content || "Note"}</div>
+            <div data-open={selected === note.id} onClick={() => openTile()} tabIndex={-1} className={`relative flex flex-col h-52 w-full bg-white rounded-md shadow-md px-5 py-3 select-nothing overflow-hidden md:h-64 md:w-96`}>
+                <BiMessageSquareEdit title="edit" onClick={e => {e.stopPropagation(); openTile(true);}} className='absolute h-6 sm:h-10 w-10 right-12 top-2 sm:p-2 bg-transparent cursor-pointer' color="rgba(0, 0, 0, .6)" />
+                <MdOutlineContentCopy title="Copy" onClick={e => {e.stopPropagation(); copyContent();}} className='absolute h-6 sm:h-10 w-10 right-2 top-2 sm:p-2 bg-transparent cursor-pointer' color="rgba(0, 0, 0, .6)" />
+                <div className="font-bold text-lg text-gray-500">{note.title || "Title"}</div>
+                <div className="text-gray-500 font-normal py-3 whitespace-pre-wrap overflow-hidden truncate">{note.content || "Note"}</div>
             </div>
             {
                 selected === note.id &&
