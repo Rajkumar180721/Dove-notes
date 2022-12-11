@@ -19,15 +19,12 @@ export function useStateCallback<T>(initValue: T) {
     const isFirstRender = useRef<boolean>(true);
 
     const updater = useCallback((currentValue: T, callback?: () => void) => {
-        console.log('updater', {currentValue, callback});
-        
         setValue(currentValue);
         if (callback)
             callbackRef.current.push(callback)
     }, [setValue]);
 
     useEffect(() => {
-        console.log(callbackRef.current, isFirstRender.current);
         if (isFirstRender.current) {
             isFirstRender.current = false;
             return;

@@ -48,6 +48,10 @@ export const FolderTile = ({id, name, selected, saveLabel, deleteFolder, setSele
 
 
     useEffect(() => {
+        setEdit(false);
+    }, [selected]);
+
+    useEffect(() => {
         if (edit && ref.current) {
             ref.current.focus();
             ref.current.select();
